@@ -1,118 +1,113 @@
 # catalyst-deccan-hackathon
 
-🎯 SkillCheck AI
+🚀 SkillCheck AI
+👨‍💻 Built by
 
-Built by Nishant Singh
+Nishant Singh
 
-SkillCheck AI is an AI-powered tool that checks how good a person really is at skills — not just what they claim in their resume.
+📌 About the Project
 
-It helps:
+SkillCheck AI is an AI-powered system that checks a candidate’s real skills — not just what is written in their resume.
 
-Evaluate real skill level
+It helps to:
+Check actual skill level
 Find weak areas
 Suggest what to learn next
-Provide a step-by-step learning plan
-📌 Problem
-
-Today:
-
-People list skills in resumes (but may not truly know them)
+Save recruiter time
+🎯 Problem
+People list skills they don’t fully know
 Recruiters spend too much time screening
-Skill gaps are discovered too late
+Skill gaps are found too late
 
-👉 Problem: We don’t know real skill level quickly
+👉 Problem: We cannot easily know real skill level
 
-🚀 Solution
+💡 Solution
 
-SkillCheck AI solves this by:
+SkillCheck AI:
 
-Taking Job Description + Resume
-Asking smart, real-world questions
-Evaluating answers
-Giving skill scores
-Finding weak areas
-Creating a personalised learning plan
-Sending the report via email
-🔁 How It Works
-Resume + Job Description
-          ↓
-AI extracts required skills
-          ↓
-AI asks questions
-          ↓
+Takes Job Description + Resume
+Asks real-world questions
 Evaluates answers
-          ↓
-Gives score
-          ↓
-Finds weak skills
-          ↓
-Creates learning plan
-          ↓
-Sends email report
-🧠 Core Logic
-1. Skill Detection
+Gives skill scores
+Finds gaps
+Creates personalized learning plan
+Sends report via email
+🔁 Workflow
 
-AI reads the job description and finds required skills automatically.
+Resume + Job Description
+↓
+Skill Extraction
+↓
+AI Questions
+↓
+Answer Evaluation
+↓
+Skill Scoring
+↓
+Gap Analysis
+↓
+Learning Plan
+↓
+Email Report
 
-2. Real Skill Assessment
-
-Instead of asking:
-❌ "Rate your Python skill"
-
-It asks:
-✔ "Explain how you used Python in a real project"
-
-👉 This checks real understanding
-
-📊 Skill Score (Graph Style)
-Strong        █████
-Medium        ███
-Weak          █
+🧠 Core Features
+🔍 Smart Skill Detection
+Automatically finds skills from job description
+No hardcoding
+🎯 Real Skill Assessment
+No MCQs
+No self-rating
+Based on real answers
+📊 Skill Score
+Strong → █████
+Medium → ███
+Weak → █
 📊 Example Output
-SQL            █████   (Strong)
-Python         ████    (Strong)
-Communication  █████   (Strong)
-Reporting      ███     (Needs Improvement)
+SQL → █████ (Strong)
+Python → ████ (Strong)
+Communication → █████ (Strong)
+Reporting → ███ (Needs Improvement)
 📈 Impact
-Time Comparison
-Manual Process     █████████████████ (45–60 min)
-SkillCheck AI      ███               (10–15 min)
-Cost Comparison
-Traditional        ███████████ (₹2000–5000)
-SkillCheck AI      █           (Free)
-Scalability
-Manual Hiring      █ (1 user at a time)
-SkillCheck AI      ███████████ (Unlimited users)
-🔧 Tech Stack
+⏱ Time
+Manual Process → 45–60 min
+SkillCheck AI → 10–15 min
+💰 Cost
+Traditional → ₹2000–5000
+SkillCheck AI → Free
+📊 Scalability
+Manual Hiring → Limited
+SkillCheck AI → Unlimited
+⚙️ Tech Stack
 Frontend: Streamlit
 AI Engine: OpenRouter
 Automation: n8n
 Email: Gmail
 Version Control: GitHub
-🚀 How to Run
+🚀 Getting Started
 1. Clone the repository
-git clone <your-repo-link>
-cd <your-project-folder>
+git clone https://github.com/your-username/skillcheck-ai.git
+cd skillcheck-ai
 2. Install dependencies
 pip install -r requirements.txt
 3. Add API key
 
-Create .streamlit/secrets.toml and add:
+Create .streamlit/secrets.toml
 
 OPENROUTER_API_KEY="your-api-key"
 4. Run the app
 streamlit run app.py
-💡 Features
+✨ Features
 AI-based skill evaluation
 Real question-based assessment
 Dynamic skill extraction
 Personalized learning plan
 Email report system
 Works for any job role
-👨‍💻 Author
-
-Nishant Singh
-
+🏆 Why This Project is Strong
+Not just a chatbot — it evaluates skills
+Uses real-world questions
+Gives actionable learning plan
+Fully working system
 📄 License
 
 This project is built for hackathon purposes.
