@@ -1,4 +1,3 @@
-
 import streamlit as st
 from openai import OpenAI
 import requests
@@ -95,7 +94,7 @@ IMPORTANT RULES:
 # ── OpenRouter client ─────────────────────────────────────────────────────────
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=st.secrets["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"]
+    api_key=st.secrets["OPENROUTER_API_KEY"]
 )
 
 # ── Session state ─────────────────────────────────────────────────────────────
@@ -251,5 +250,6 @@ with st.sidebar:
     st.divider()
     st.caption(" Catalyst Hackathon 2026")
     st.caption("By Nishant Singh")
+
 
 
