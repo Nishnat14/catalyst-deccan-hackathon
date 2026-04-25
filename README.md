@@ -118,7 +118,8 @@ Email Report
 ---
 
 ## 🚀 Getting Started  
-
+### Live Link 
+ https://catalyst-deccan-hackathon-pnrwppwj5ts8pxy8udgx2c.streamlit.app/
 ### 1. Clone the repository  
 ```bash
 git clone https://github.com/Nishnat14/catalyst-deccan-hackathon
