@@ -1,14 +1,14 @@
 import streamlit as st
 import requests
 
-# ── CONFIG ─────────────────────────────────────────────
+# ── Page config ─────────────────────────────────────────
 st.set_page_config(
-    page_title="SkillSense AI – Skill Assessment Agent",
+    page_title="SkillCheck AI",
     page_icon="🎯",
     layout="centered"
 )
 
-# ── STYLING ────────────────────────────────────────────
+# ── UI Styling ──────────────────────────────────────────
 st.markdown("""
 <style>
 .main { background-color: #f8f9fb; }
@@ -23,117 +23,108 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── API KEY ────────────────────────────────────────────
+# ── Header ──────────────────────────────────────────────
+st.title("🎯 SkillCheck AI")
+st.write("AI Skill Assessment & Learning Plan Generator")
+st.divider()
+
+# ── API Key Check ───────────────────────────────────────
 if "OPENROUTER_API_KEY" not in st.secrets:
-    st.error("Missing API Key")
+    st.error("API key missing. Add it in Streamlit secrets.")
     st.stop()
 
-API_KEY = st.secrets["OPENROUTER_API_KEY"]
+# ── SYSTEM PROMPT ───────────────────────────────────────
+SYSTEM_PROMPT = """You are SkillCheck AI...
 
-# ── SYSTEM PROMPT ──────────────────────────────────────
-SYSTEM_PROMPT = """You are SkillSense AI...
-
-Follow full structured assessment flow.
+Follow full skill assessment flow.
 Do not use markdown tables.
-Use bullet points only.
+Keep output clean and structured.
 """
 
-# ── HELPER FUNCTION (FIXED) ────────────────────────────
-def call_llm(messages):
-    try:
-        response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "openrouter/auto",
-                "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
-                "max_tokens": 2000
-            }
-        )
-
-        data = response.json()
-
-        if "choices" not in data:
-            return f"API Error: {data}"
-
-        return data["choices"][0]["message"]["content"]
-
-    except Exception as e:
-        return str(e)
-
-# ── SESSION STATE ──────────────────────────────────────
+# ── Session State ───────────────────────────────────────
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    st.session_state.stage = "start"
-    st.session_state.greeted = False
-    st.session_state.email_sent = False
 
-# ── GREETING ───────────────────────────────────────────
-if not st.session_state.greeted:
-    greeting = "👋 Hi! Paste Job Description to begin 🚀"
-    st.session_state.messages.append({"role": "assistant", "content": greeting})
-    st.session_state.greeted = True
-
-# ── STATUS ─────────────────────────────────────────────
-stage_labels = {
-    "start": "📋 Paste Job Description",
-    "jd_received": "📄 Paste Resume",
-    "resume_received": "🔍 Assessment Starting",
-    "assessing": "💬 Assessment in Progress",
-    "complete": "✅ Done"
-}
-st.markdown(f"<div class='status-box'>{stage_labels.get(st.session_state.stage)}</div>", unsafe_allow_html=True)
-
-# ── CHAT DISPLAY ───────────────────────────────────────
+# ── Chat Display ────────────────────────────────────────
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# ── INPUT ──────────────────────────────────────────────
-if prompt := st.chat_input("Type here..."):
+# ── Chat Input ──────────────────────────────────────────
+if prompt := st.chat_input("Enter Job Description / Resume / Answer..."):
 
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # Store user message
+    st.session_state.messages.append({
+        "role": "user",
+        "content": prompt
+    })
 
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Stage control
-    user_count = len([m for m in st.session_state.messages if m["role"] == "user"])
+    # ── Build Safe Messages ─────────────────────────────
+    api_messages = []
+    for m in st.session_state.messages:
+        if "role" in m and "content" in m and m["content"]:
+            api_messages.append({
+                "role": str(m["role"]),
+                "content": str(m["content"])
+            })
 
-    if user_count == 1:
-        st.session_state.stage = "jd_received"
-    elif user_count == 2:
-        st.session_state.stage = "resume_received"
-    else:
-        st.session_state.stage = "assessing"
+    # ── API Call ───────────────────────────────────────
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
 
-    # Email handling
-    if "@" in prompt and "." in prompt:
-        reply = "Your personalised assessment report has been sent! Best of luck!"
-        st.session_state.stage = "complete"
-    else:
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                reply = call_llm(st.session_state.messages)
-                st.markdown(reply)
+            try:
+                response = requests.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {st.secrets['OPENROUTER_API_KEY']}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "openrouter/auto",
+                        "max_tokens": 2000,
+                        "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + api_messages
+                    }
+                )
 
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+                data = response.json()
+
+                if "choices" not in data:
+                    st.error(f"API Error: {data}")
+                    st.stop()
+
+                reply = data["choices"][0]["message"]["content"]
+
+            except Exception as e:
+                reply = f"Error: {str(e)}"
+
+        st.markdown(reply)
+
+    # Save assistant response
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": reply
+    })
+
     st.rerun()
 
-# ── SIDEBAR ────────────────────────────────────────────
+# ── Sidebar ─────────────────────────────────────────────
 with st.sidebar:
-    st.write("### Flow")
+    st.header("How it works")
     st.write("""
-1. JD  
-2. Resume  
-3. Questions  
-4. Analysis  
-5. Plan  
+1. Paste Job Description  
+2. Paste Resume  
+3. Answer questions  
+4. Get skill analysis  
+5. Receive learning plan  
 """)
 
     if st.button("Reset"):
-        st.session_state.clear()
+        st.session_state.messages = []
         st.rerun()
+
+    st.caption("Built by Nishant Singh 🚀")
+
+
