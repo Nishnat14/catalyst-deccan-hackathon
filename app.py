@@ -1,5 +1,4 @@
 import streamlit as st
-from openai import OpenAI
 import requests
 
 # ── Page config ──────────────────────────────────────────────────────────────
@@ -92,10 +91,20 @@ IMPORTANT RULES:
 - Write everything in clean plain text suitable for email"""
 
 # ── OpenRouter client ─────────────────────────────────────────────────────────
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=st.secrets["OPENROUTER_API_KEY"]
+response = requests.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {st.secrets['OPENROUTER_API_KEY']}",
+        "Content-Type": "application/json"
+    },
+    json={
+        "model": "openrouter/auto",
+        "max_tokens": 4000,
+        "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + api_messages
+    }
 )
+
+reply = response.json()["choices"][0]["message"]["content"]
 
 # ── Session state ─────────────────────────────────────────────────────────────
 if "messages" not in st.session_state:
