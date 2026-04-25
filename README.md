@@ -121,5 +121,5 @@ Email Report
 
 ### 1. Clone the repository  
 ```bash
-git clone https://github.com/your-username/skillcheck-ai.git
+git clone https://github.com/Nishnat14/skillcheck-ai.git
 cd skillcheck-ai
