@@ -5,7 +5,7 @@ import requests
 
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="SkillSense AI – Skill Assessment Agent",
+    page_title="SkillCheck AI – Skill Assessment Agent",
     page_icon="🎯",
     layout="centered"
 )
@@ -38,12 +38,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Header ────────────────────────────────────────────────────────────────────
-st.title("🎯 SkillSense AI")
+st.title("🎯 SkillCheck AI")
 st.markdown('<p class="subtitle">AI-Powered Skill Assessment & Personalised Learning Plan Agent</p>', unsafe_allow_html=True)
 st.divider()
 
 # ── System prompt ─────────────────────────────────────────────────────────────
-SYSTEM_PROMPT = """You are SkillSense AI, an expert career coach and skill assessment agent.
+SYSTEM_PROMPT = """You are SkillCheck AI, an expert career coach and skill assessment agent.
 
 Your job is to:
 1. Accept a Job Description (JD) and a candidate's Resume from the user
@@ -107,7 +107,7 @@ if "messages" not in st.session_state:
 
 # ── Auto-greeting (static — no API call) ─────────────────────────────────────
 if not st.session_state.greeted:
-    greeting = "👋 Hi there! Welcome to **SkillSense AI**!\n\nI'm your personal career coach — I'll assess your skills against a Job Description and build you a personalised learning plan.\n\n**Ready to get started? Paste the Job Description below!** 🚀"
+    greeting = "👋 Hi there! Welcome to **SkillCheck AI**!\n\nI'm your personal career coach — I'll assess your skills against a Job Description and build you a personalised learning plan.\n\n**Ready to get started? Paste the Job Description below!** 🚀"
     st.session_state.messages.append({"role": "assistant", "content": greeting})
     st.session_state.greeted = True
 
@@ -178,11 +178,11 @@ if prompt := st.chat_input("Type your response here..."):
         learning_plan = learning_plan.split("Would you like me to send")[0].strip()
         try:
             requests.post(
-                "https://bhuvana-vijay.app.n8n.cloud/webhook/skillsense",
+                "https://bhuvana-vijay.app.n8n.cloud/webhook/SkillCheck",
                 json={
                     "email": prompt,
                     "report": learning_plan,
-                    "name": "SkillSense AI Assessment Report"
+                    "name": "SkillCheck AI Assessment Report"
                 },
                 timeout=5
             )
