@@ -91,11 +91,24 @@ IMPORTANT RULES:
 - Focus on adjacent skills the candidate can realistically learn
 - Write everything in clean plain text suitable for email"""
 
-# ── OpenRouter client ─────────────────────────────────────────────────────────
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=st.secrets["OPENROUTER_API_KEY"]
-)
+# ── OpenRouter client ────────────────────────────────────────────────────────
+
+def call_llm(messages):
+    response = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {st.secrets['OPENROUTER_API_KEY']}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "model": "openrouter/auto",
+            "messages": [{"role": "system", "content": SYSTEM_PROMPT}] + messages,
+            "max_tokens": 2000
+        }
+    )
+
+    data = response.json()
+    return data["choices"][0]["message"]["content"]
 
 # ── Session state ─────────────────────────────────────────────────────────────
 if "messages" not in st.session_state:
